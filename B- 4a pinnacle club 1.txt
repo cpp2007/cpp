@@ -1,0 +1,132 @@
+#include <iostream>
+using namespace std;
+
+struct Node {
+    int prn;
+    string name;
+    Node* next;
+};
+
+class PinnacleClub {
+private:
+    Node* head;
+
+public:
+    PinnacleClub() {
+        head = nullptr;
+    }
+
+
+    void addPresident(int prn, string name) {
+        Node* newNode = new Node{prn, name, head};
+        head = newNode;
+        cout << "President added successfully.\n";
+    }
+
+
+    void addSecretary(int prn, string name) {
+        Node* newNode = new Node{prn, name, nullptr};
+        if (head == nullptr) {
+            head = newNode;
+            return;
+        }
+        Node* temp = head;
+        while (temp->next != nullptr)
+            temp = temp->next;
+        temp->next = newNode;
+        cout << "Secretary added successfully.\n";
+    }
+
+
+    void addMember(int prn, string name) {
+        if (head == nullptr || head->next == nullptr) {
+            cout << "Please add President and Secretary first.\n";
+            return;
+        }
+        Node* newNode = new Node{prn, name, nullptr};
+        Node* temp = head;
+        while (temp->next->next != nullptr)
+            temp = temp->next;
+
+        newNode->next = temp->next;
+        temp->next = newNode;
+        cout << "Member added successfully.\n";
+    }
+
+    void displayMembers() {
+        if (head == nullptr) {
+            cout << "No members in the club.\n";
+            return;
+        }
+
+        cout << "\n--- Pinnacle Club Members ---\n";
+        Node* temp = head;
+        while (temp != nullptr) {
+            cout << temp->prn << " - " << temp->name;
+            if (temp == head)
+                cout << " (President)";
+            else if (temp->next == nullptr)
+                cout << " (Secretary)";
+            cout << endl;
+            temp = temp->next;
+        }
+    }
+
+    
+    void countMembers() {
+        int count = 0;
+        Node* temp = head;
+        while (temp != nullptr) {
+            count++;
+            temp = temp->next;
+        }
+        cout << "Total number of members in the club: " << count << endl;
+    }
+};
+
+int main() {
+    PinnacleClub club;
+    int choice, prn;
+    string name;
+
+    while (true) {
+        cout << "\n--- Pinnacle Club Menu ---\n";
+        cout << "1. Add President\n";
+        cout << "2. Add Member\n";
+        cout << "3. Add Secretary\n";
+        cout << "4. Display Members\n";
+        cout << "5. Count Total Members\n";
+        cout << "6. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+        case 1:
+            cout << "Enter PRN and Name of President: ";
+            cin >> prn >> name;
+            club.addPresident(prn, name);
+            break;
+        case 2:
+            cout << "Enter PRN and Name of Member: ";
+            cin >> prn >> name;
+            club.addMember(prn, name);
+            break;
+        case 3:
+            cout << "Enter PRN and Name of Secretary: ";
+            cin >> prn >> name;
+            club.addSecretary(prn, name);
+            break;
+        case 4:
+            club.displayMembers();
+            break;
+        case 5:
+            club.countMembers();
+            break;
+        case 6:
+            cout << "Exiting program...\n";
+            return 0;
+        default:
+            cout << "Invalid choice! Please try again.\n";
+        }
+    }
+}

@@ -1,0 +1,126 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+#define SIZE 10 
+class HashEntry {
+public:
+    string name;
+    long long phone;
+    bool isOccupied;
+
+    HashEntry() {
+        name = "";
+        phone = 0;
+        isOccupied = false;
+    }
+};
+
+class HashTable {
+    HashEntry table[SIZE];
+
+public:
+    int hashFunction(string key) {
+        int sum = 0;
+        for (char c : key)
+            sum += c;
+        return sum % SIZE;
+    }
+
+    void insert(string name, long long phone) {
+        int index = hashFunction(name);
+        int startIndex = index;
+
+        while (table[index].isOccupied) {
+            if (table[index].name == name) {
+                cout << "Duplicate entry found. Updating phone number.\n";
+                table[index].phone = phone;
+                return;
+            }
+            index = (index + 1) % SIZE;
+            if (index == startIndex) {
+                cout << "Hash table is full! Cannot insert more records.\n";
+                return;
+            }
+        }
+
+        table[index].name = name;
+        table[index].phone = phone;
+        table[index].isOccupied = true;
+        cout << "Record inserted at index " << index << endl;
+    }
+
+      void search(string name) {
+        int index = hashFunction(name);
+        int startIndex = index;
+
+        while (table[index].isOccupied) {
+            if (table[index].name == name) {
+                cout << "Record found!\n";
+                cout << "Name: " << table[index].name
+                     << "\tPhone: " << table[index].phone << endl;
+                return;
+            }
+            index = (index + 1) % SIZE;
+            if (index == startIndex) break;
+        }
+        cout << "Record not found.\n";
+    }
+
+   
+    void display() {
+        cout << "\n--- Telephone Directory ---\n";
+        for (int i = 0; i < SIZE; i++) {
+            cout << "[" << i << "] ";
+            if (table[i].isOccupied)
+                cout << "Name: " << table[i].name << ", Phone: " << table[i].phone;
+            else
+                cout << "Empty";
+            cout << endl;
+        }
+    }
+};
+
+int main() {
+    HashTable ht;
+    int choice;
+    string name;
+    long long phone;
+
+    cout << "Telephone Book using Hash Table (Linear Probing)\n";
+
+    do {
+        cout << "\nMenu:\n";
+        cout << "1. Insert record\n";
+        cout << "2. Search record\n";
+        cout << "3. Display table\n";
+        cout << "4. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+        case 1:
+            cout << "Enter name: ";
+            cin >> name;
+            cout << "Enter phone number: ";
+            cin >> phone;
+            ht.insert(name, phone);
+            break;
+        case 2:
+            cout << "Enter name to search: ";
+            cin >> name;
+            ht.search(name);
+            break;
+        case 3:
+            ht.display();
+            break;
+        case 4:
+            cout << "Exiting program.\n";
+            break;
+        default:
+            cout << "Invalid choice! Try again.\n";
+        }
+    } while (choice != 4);
+
+    return 0;
+}

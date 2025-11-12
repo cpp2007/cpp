@@ -1,0 +1,49 @@
+#include <iostream>
+using namespace std;
+
+struct Seat {
+    int no, booked;
+    Seat *next;
+};
+
+Seat* createRow() {
+    Seat *head = NULL, *temp = NULL;
+    for(int i = 1; i <= 7; i++) {
+        Seat *n = new Seat{i, 0, NULL};
+        if(!head) head = n;
+        else temp->next = n;
+        temp = n;
+    }
+    return head;
+}
+
+void display(Seat* rows[]) {
+    for(int i = 0; i < 10; i++) {
+        cout << "Row " << i+1 << ": ";
+        for(Seat* t = rows[i]; t; t = t->next)
+            cout << (t->booked ? "[X]" : "[ ]");
+        cout << endl;
+    }
+}
+
+void book(Seat* rows[], int r, int s) {
+    Seat* t = rows[r-1];
+    while(t && t->no != s) t = t->next;
+    if(!t) cout << "Invalid seat!\n";
+    else if(t->booked) cout << "Already booked!\n";
+    else { t->booked = 1; cout << "Booked successfully!\n"; }
+}
+
+int main() {
+    Seat* rows[10];
+    for(int i = 0; i < 10; i++) rows[i] = createRow();
+
+    int r, s;
+    while(true) {
+        display(rows);
+        cout << "\nEnter Row and Seat to book (0 0 to exit): ";
+        cin >> r >> s;
+        if(r==0 && s==0) break;
+        book(rows, r,s);
+    }
+}

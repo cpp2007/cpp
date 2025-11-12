@@ -1,0 +1,89 @@
+#include <iostream>
+using namespace std;
+
+int linearSearch(int arr[], int n, int key) {
+    for (int i = 0; i < n; i++) {
+        if (arr[i] == key)
+            return i;
+    }
+    return -1;
+}
+
+int binarySearch(int arr[], int n, int key) {
+    int start = 0, end = n - 1;
+    while (start <= end) {
+        int mid = (start + end) / 2;
+        if (arr[mid] == key)
+            return mid;
+        else if (arr[mid] < key)
+            start = mid + 1;
+        else
+            end = mid - 1;
+    }
+    return -1;
+}
+
+int main() {
+    int choice;
+    do {
+        cout << "\n===== MENU =====" << endl;
+        cout << "1. Linear Search (Unsorted Roll Numbers)" << endl;
+        cout << "2. Binary Search (Sorted Roll Numbers)" << endl;
+        cout << "3. Exit" << endl;
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1: {
+                int n, key;
+                cout << "\nEnter number of students: ";
+                cin >> n;
+
+                int roll[n];
+                cout << "Enter roll numbers : ";
+                for (int i = 0; i < n; i++)
+                    cin >> roll[i];
+
+                cout << "Enter roll number to search: ";
+                cin >> key;
+
+                int pos = linearSearch(roll, n, key);
+                if (pos != -1)
+                    cout << "Student attended training program (found at index " << pos << ")." << endl;
+                else
+                    cout << "Student did NOT attend the training program." << endl;
+                break;
+            }
+
+            case 2: {
+                int n, key;
+                cout << "\nEnter number of students: ";
+                cin >> n;
+
+                int roll[n];
+                cout << "Enter roll numbers : ";
+                for (int i = 0; i < n; i++)
+                    cin >> roll[i];
+
+                cout << "Enter roll number to search: ";
+                cin >> key;
+
+                int pos = binarySearch(roll, n, key);
+                if (pos != -1)
+                    cout << "Student attended training program (found at index " << pos << ")." << endl;
+                else
+                    cout << "Student did NOT attend the training program." << endl;
+                break;
+            }
+
+            case 3:
+                cout << "Exiting program..." << endl;
+                break;
+
+            default:
+                cout << "Invalid choice! Please try again." << endl;
+        }
+    } while (choice != 3);
+
+    return 0;
+}

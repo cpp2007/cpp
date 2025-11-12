@@ -1,0 +1,39 @@
+#include<iostream>
+using namespace std;
+int linearsearch(int arr[],int n,int key){
+    for(int i=0;i<n;i++){
+        if(arr[i]==key){
+            return i;
+        }
+    }
+    return -1;
+}
+
+int main(){
+    int n;
+    cout<<"enter the no.of student:"<<endl;
+    cin>>n;
+    
+    int rollno[n];
+    cout<<"enter the rollno.of student (unsorted order):"<<endl;
+    for(int i=0;i<n;i++){
+      cin>>rollno[i];
+      
+    }
+    int key;
+    cout<<"enter the search roll no.:"<<endl;
+    cin>>key;
+    
+    int result=linearsearch(rollno,n,key);
+    
+    if(result!= -1){
+        cout<<"student attend the training program "<<endl;
+        
+    }
+    else{
+        cout<<"student does not attend program "<<endl;
+    }
+        
+  return 0;  
+    
+}
