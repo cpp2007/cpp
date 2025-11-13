@@ -1,66 +1,68 @@
 #include <iostream>
 using namespace std;
 
-#define MAX 10 
+const int MAX = 10;
+int graph[MAX][MAX];
+bool visited[MAX];
 
-void DFS(int graph[MAX][MAX], int visited[MAX], int n, int start) {
-    visited[start] = 1; 
-
-    for (int i = 0; i < n; i++) {
-        if (graph[start][i] == 1 && visited[i] == 0) {
-            DFS(graph, visited, n, i);
-        }
-    }
+void DFS(int node, int n) {
+visited[node] = true;
+for (int i = 0; i < n; i++) {
+if (graph[node][i] != 0 && !visited[i]) {
+DFS(i, n);
+}
+}
 }
 
 int main() {
-    int n;
-    cout << "Enter number of cities: ";
-    cin >> n;
+int n;
+cout << "Enter number of cities: ";
+cin >> n;
 
-    string cities[MAX];
-    cout << "Enter names of cities:\n";
-    for (int i = 0; i < n; i++) {
-        cin >> cities[i];
-    }
+for (int i = 0; i < n; i++)  
+    for (int j = 0; j < n; j++)  
+        graph[i][j] = 0;  
 
-    int graph[MAX][MAX];
-    cout << "\nEnter adjacency matrix (1 if flight exists, 0 if not):\n";
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            cin >> graph[i][j];
-        }
-    }
+int flights;  
+cout << "Enter number of flights: ";  
+cin >> flights;  
 
-    cout << "\nAdjacency Matrix:\n   ";
-    for (int i = 0; i < n; i++)
-        cout << cities[i] << " ";
-    cout << endl;
+cout << "Enter flight details (source destination cost):\n";  
+for (int i = 0; i < flights; i++) {  
+    int src, dest, cost;  
+    cin >> src >> dest >> cost;  
 
-    for (int i = 0; i < n; i++) {
-        cout << cities[i] << " ";
-        for (int j = 0; j < n; j++) {
-            cout << " " << graph[i][j] << " ";
-        }
-        cout << endl;
-    }
+    graph[src][dest] = cost;  
+    graph[dest][src] = cost;   
+}  
 
-    int visited[MAX] = {0};
-    DFS(graph, visited, n, 0); 
+cout << "\nAdjacency Matrix:\n";  
+for (int i = 0; i < n; i++) {  
+    for (int j = 0; j < n; j++) {  
+        cout << graph[i][j] << " ";  
+    }  
+    cout << endl;  
+}  
 
-    bool connected = true;
-    for (int i = 0; i < n; i++) {
-        if (visited[i] == 0) {
-            connected = false;
-            break;
-        }
-    }
+for (int i = 0; i < n; i++) {  
+    visited[i] = false;  
+}  
 
-    if (connected)
-        cout << "\n The graph is CONNECTED. All cities are reachable.\n";
-    else
-        cout << "\n The graph is NOT connected. Some cities are unreachable.\n";
+DFS(0, n);  
 
-    return 0;
+bool connected = true;  
+for (int i = 0; i < n; i++) {  
+    if (!visited[i]) {  
+        connected = false;  
+        break;  
+    }  
+}  
+
+if (connected)  
+    cout << "\nThe graph is CONNECTED.\n";  
+else  
+    cout << "\nThe graph is NOT CONNECTED.\n";
+
+return 0;
+
 }
-
