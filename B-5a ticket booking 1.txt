@@ -2,48 +2,109 @@
 using namespace std;
 
 struct Seat {
-    int no, booked;
-    Seat *next;
+    int seat_number;
+    int status;
+    Seat* prev;
+    Seat* next;
+    Seat(int num) {
+        seat_number = num;
+        status = 0;
+        prev = next = nullptr;
+    }
 };
 
-Seat* createRow() {
-    Seat *head = NULL, *temp = NULL;
-    for(int i = 1; i <= 7; i++) {
-        Seat *n = new Seat{i, 0, NULL};
-        if(!head) head = n;
-        else temp->next = n;
-        temp = n;
+Seat* rows[10];
+
+void initializeTheater() {
+    for (int i = 0; i < 10; i++) {
+        Seat* head = nullptr;
+        Seat* tail = nullptr;
+        for (int j = 1; j <= 7; j++) {
+            Seat* newSeat = new Seat(j);
+            if (!head) {
+                head = tail = newSeat;
+            } else {
+                tail->next = newSeat;
+                newSeat->prev = tail;
+                tail = newSeat;
+            }
+        }
+        rows[i] = head;
     }
-    return head;
 }
 
-void display(Seat* rows[]) {
-    for(int i = 0; i < 10; i++) {
-        cout << "Row " << i+1 << ": ";
-        for(Seat* t = rows[i]; t; t = t->next)
-            cout << (t->booked ? "[X]" : "[ ]");
+void displayBookedSeats() {
+    cout << "\nList of Booked Seats:\n";
+    for (int i = 0; i < 10; i++) {
+        Seat* temp = rows[i];
+        bool found = false;
+        cout << "Row " << i + 1 << ": ";
+        while (temp != nullptr) {
+            if (temp->status == 1) {
+                cout << temp->seat_number << " ";
+                found = true;
+            }
+            temp = temp->next;
+        }
+        if (!found)
+            cout << "No seats booked";
         cout << endl;
     }
 }
 
-void book(Seat* rows[], int r, int s) {
-    Seat* t = rows[r-1];
-    while(t && t->no != s) t = t->next;
-    if(!t) cout << "Invalid seat!\n";
-    else if(t->booked) cout << "Already booked!\n";
-    else { t->booked = 1; cout << "Booked successfully!\n"; }
+void bookSeat(int row_number, int seat_number) {
+    if (row_number < 1 || row_number > 10 || seat_number < 1 || seat_number > 7) {
+        cout << "Invalid row or seat number.\n";
+        return;
+    }
+
+    Seat* temp = rows[row_number - 1];
+    while (temp != nullptr && temp->seat_number != seat_number) {
+        temp = temp->next;
+    }
+
+    if (temp == nullptr) {
+        cout << "Seat not found.\n";
+    } else if (temp->status == 1) {
+        cout << "Seat already booked.\n";
+    } else {
+        temp->status = 1;
+        cout << "Seat booked successfully.\n";
+    }
+}
+
+void menu() {
+    int choice, row, seat;
+    do {
+        cout << "\n--- Cinemax Theater Booking System ---\n";
+        cout << "1. Display Booked Seats\n";
+        cout << "2. Book a Seat\n";
+        cout << "3. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                displayBookedSeats();
+                break;
+            case 2:
+                cout << "Enter Row (1-10): ";
+                cin >> row;
+                cout << "Enter Seat (1-7): ";
+                cin >> seat;
+                bookSeat(row, seat);
+                break;
+            case 3:
+                cout << "Exiting...\n";
+                break;
+            default:
+                cout << "Invalid choice. Try again.\n";
+        }
+    } while (choice != 3);
 }
 
 int main() {
-    Seat* rows[10];
-    for(int i = 0; i < 10; i++) rows[i] = createRow();
-
-    int r, s;
-    while(true) {
-        display(rows);
-        cout << "\nEnter Row and Seat to book (0 0 to exit): ";
-        cin >> r >> s;
-        if(r==0 && s==0) break;
-        book(rows, r,s);
-    }
+    initializeTheater();
+    menu();
+    return 0;
 }
